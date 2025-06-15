@@ -1,0 +1,33 @@
+from livekit.agents import Agent, ChatContext, AgentSession
+
+# Create your Agent subclass that takes initial context
+class Assistant(Agent):
+    def __init__(self, chat_ctx: ChatContext):
+        super().__init__(
+            chat_ctx=chat_ctx,
+            instructions="You are a friendly voice AI assistant."
+        )
+
+async def entrypoint(ctx: JobContext):
+    await ctx.connect(auto_subscribe=AutoSubscribe.SUBSCRIBE_ALL)
+
+    # Prepare initial context
+    initial_ctx = ChatContext()
+    initial_ctx.add_message(
+        role="assistant",
+        content="User is Sarah, who likes hiking and photography."
+    )
+
+    # Build plugins (stt, llm, tts, vad...) as before
+    session = AgentSession(
+        stt=...,
+        vad=...,
+        llm=...,
+        tts=...,
+    )
+
+    # Start session with initial context embedded in Agent
+    await session.start(
+        room=ctx.room,
+        agent=Assistant(chat_ctx=initial_ctx)
+    )
