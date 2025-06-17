@@ -31,7 +31,7 @@ async def entrypoint(ctx: JobContext):
     session = AgentSession(
         stt=deepgram.STT(),
         llm=openai.LLM().with_ollama(model="llama3.2",temperature=0.8),
-        tts=cartesia.TTS(voice="shimmer"),
+        tts=cartesia.TTS(),
         vad=silero.VAD.load(),
         turn_detection=MultilingualModel(),
     )
