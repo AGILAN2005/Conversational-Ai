@@ -7,6 +7,12 @@ flask[async]
 flask
 flask-cors
 uvicorn
-torch==2.2.2 
-torchvision==0.17.2 
-torchaudio==2.2.2
+# torch==2.2.2 
+# torchvision==0.17.2 
+# torchaudio==2.2.2
+livekit-plugins-google
+livekit-plugins-noise-cancellation
+mem0ai
+duckduckgo-search
+langchain_community
+requests

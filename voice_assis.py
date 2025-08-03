@@ -6,11 +6,10 @@ from livekit.agents import (
     RoomInputOptions,
     WorkerOptions,
     cli,
-    AutoSubscribe
     )
 from dotenv import load_dotenv
 load_dotenv()
-from prompts import INSTRUCTIONS,WELCOME_MESSAGE
+from prompts import AGENT_INSTRUCTION,SESSION_INSTRUCTION
 from livekit.plugins import (
                             deepgram,
                             openai, 
@@ -22,16 +21,15 @@ from livekit.plugins import (
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 # from livekit.agents.stt import deepgram
 
-
 async def entrypoint(ctx: JobContext):
     await ctx.connect()
     # await ctx.wait_for_participant() auto_subscribe=AutoSubscribe.SUBSCRIBE_ALL
 
-    agent = Agent(instructions=INSTRUCTIONS)
+    agent = Agent(instructions=AGENT_INSTRUCTION)
     session = AgentSession(
         stt=deepgram.STT(),
         llm=openai.LLM().with_ollama(model="llama3.2",temperature=0.8),
-        tts=cartesia.TTS(),
+        tts=silero.TTS,
         vad=silero.VAD.load(),
         turn_detection=MultilingualModel(),
     )
@@ -39,7 +37,7 @@ async def entrypoint(ctx: JobContext):
     await session.start(room=ctx.room, agent=agent,
         room_input_options=RoomInputOptions(noise_cancellation=noise_cancellation.BVC())
     )
-    await session.generate_reply(instructions=WELCOME_MESSAGE)
+    await session.generate_reply(instructions=SESSION_INSTRUCTION)
 
 if __name__=="__main__":
     opts=WorkerOptions(entrypoint_fnc=entrypoint)
